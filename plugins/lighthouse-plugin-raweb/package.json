@@ -1,0 +1,7 @@
+{
+  "name": "lighthouse-plugin-raweb",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "plugin.mjs",
+  "exports": "./plugin.mjs"
+}

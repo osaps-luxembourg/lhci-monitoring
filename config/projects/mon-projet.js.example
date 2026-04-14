@@ -1,0 +1,24 @@
+module.exports = {
+  ci: {
+    collect: {
+      url: [
+        "https://example.com/page1",
+        "https://example.com/page2",
+      ],
+      numberOfRuns: 3,
+      settings: {
+        plugins: ["lighthouse-plugin-raweb"],
+        onlyCategories: [
+          "accessibility",
+          "lighthouse-plugin-raweb",
+        ],
+        chromeFlags: "--headless=new --no-sandbox --disable-gpu --ignore-certificate-errors",
+      },
+    },
+    upload: {
+      target: "lhci",
+      serverBaseUrl: "http://localhost:9001",
+      token: "votre-token-projet",
+    },
+  },
+};

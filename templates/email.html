@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rapport LHCI — {{PROJECT_NAME}}</title>
+  <!--[if mso]>
+  <style type="text/css">
+    table { border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0; }
+    td, th { border-collapse: collapse; }
+  </style>
+  <![endif]-->
+  <style type="text/css">
+    /* ── Scores ── */
+    .score-very-good { color: #1a7a4a; }
+    .score-good       { color: #2eaa6a; }
+    .score-medium     { color: #d97706; }
+    .score-medium-bad { color: #c2500a; }
+    .score-bad        { color: #cc1f1f; }
+
+    /* ── Légende ── */
+    .legend {
+      margin-top: 24px;
+      padding: 14px 16px;
+      background: #f8f9fc;
+      border-radius: 6px;
+      border-left: 4px solid #1a3a5c;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .legend ul {
+      list-style-type: none;
+      margin: 8px 0 0 0;
+      padding: 0;
+    }
+
+    .legend ul li {
+      margin: 2px 0;
+    }
+
+    .legend span {
+      display: inline-block;
+      margin-right: 16px;
+      font-weight: bold;
+    }
+
+    .legend-raweb {
+      border-left-color: #2e6da4;
+      line-height: 2;
+    }
+
+    .legend-raweb strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #1a3a5c;
+    }
+
+    .raweb-crit {
+      display: inline-block;
+      background: #2e6da4;
+      color: #fff;
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    .legend-raweb code {
+      background: #e8ecf0;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+
+    .footer {
+      background: #f2f4f8;
+      text-align: center;
+      padding: 16px 30px;
+      font-size: 11px;
+      color: #999;
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f2f4f8; font-family:Arial,Helvetica,sans-serif; color:#222;">
+
+  <!-- Fond général -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f4f8"
+         style="background-color:#f2f4f8;">
+    <tr>
+      <td align="center" style="padding:20px 10px;">
+
+        <!-- Bloc principal -->
+        <table width="1024" cellpadding="0" cellspacing="0" border="0"
+               style="width:820px; background-color:#ffffff; font-family:Arial,Helvetica,sans-serif;">
+
+          <!-- En-tête -->
+          <tr>
+            <td bgcolor="#1a3a5c" align="center"
+                style="padding:24px 30px; background-color:#1a3a5c;">
+              <p style="margin:0; color:#ffffff; font-size:20px; font-weight:bold;
+                         letter-spacing:0.5px; font-family:Arial,Helvetica,sans-serif;">
+                Rapport Accessibilité &mdash; {{PROJECT_NAME}} du {{TODAY}}
+              </p>
+            </td>
+          </tr>
+
+          <!-- Corps -->
+          <tr>
+            <td style="padding:28px 30px; background-color:#ffffff;">
+
+              <p style="margin:0 0 20px 0; font-size:14px; color:#555;
+                         font-family:Arial,Helvetica,sans-serif;">
+                Voici le résumé des scores d'accessibilité audités pour le projet
+                <strong>{{PROJECT_NAME}}</strong>. Le rapport CSV complet est joint à cet email.
+              </p>
+
+              <!-- Tableau des scores -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="font-size:13px; border-collapse:collapse;
+                            font-family:Arial,Helvetica,sans-serif;">
+                <thead>
+                  <tr bgcolor="#1a3a5c" style="background-color:#1a3a5c;">
+                    <th align="left"
+                        style="padding:11px 14px; color:#ffffff; font-weight:600;
+                               font-family:Arial,Helvetica,sans-serif; text-align:left;">
+                      URL
+                    </th>
+                    <th align="center" width="70"
+                        style="padding:11px 10px; color:#ffffff; font-weight:600; width:70px;
+                               font-family:Arial,Helvetica,sans-serif; text-align:center;
+                               white-space:nowrap;">
+                      Score A11y
+                    </th>
+                    <th align="center" width="55"
+                        style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
+                               font-family:Arial,Helvetica,sans-serif; text-align:center;
+                               white-space:nowrap;">
+                      Dernier
+                    </th>
+                    <th align="center" width="55"
+                        style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
+                               font-family:Arial,Helvetica,sans-serif; text-align:center;
+                               white-space:nowrap;">
+                      30j
+                    </th>
+                    <th align="center" width="70"
+                        style="padding:11px 10px; color:#ffffff; font-weight:600; width:70px;
+                               font-family:Arial,Helvetica,sans-serif; text-align:center;
+                               white-space:nowrap;">
+                      Score RAWeb
+                    </th>
+                    <th align="center" width="55"
+                        style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
+                               font-family:Arial,Helvetica,sans-serif; text-align:center;
+                               white-space:nowrap;">
+                      Dernier
+                    </th>
+                    <th align="center" width="55"
+                        style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
+                               font-family:Arial,Helvetica,sans-serif; text-align:center;
+                               white-space:nowrap;">
+                      30j
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{HTML_ROWS}}
+                </tbody>
+              </table>
+
+              <!-- Légende scores -->
+              <div class="legend">
+                <span class="score-very-good">&gt; 95</span> Excellent &nbsp;|&nbsp;
+                <span class="score-good">90–95</span> Bon &nbsp;|&nbsp;
+                <span class="score-medium">70–89</span> Moyen &nbsp;|&nbsp;
+                <span class="score-medium-bad">50–69</span> Insuffisant &nbsp;|&nbsp;
+                <span class="score-bad">&lt; 50</span> Critique
+              </div>
+
+              <!-- Légende RAWeb -->
+              <div class="legend legend-raweb">
+                <strong>Critères RAWeb testés automatiquement</strong><br>
+                <span class="raweb-crit">12.1</span> Navigation multiple — détection de menus, recherche, plan du site, fil d'Ariane <em>(informatif)</em><br>
+                <span class="raweb-crit">12.5</span> Moyen de contact — présence d'un lien de contact (mailto, formulaire…)<br>
+                <span class="raweb-crit">12.6</span> Lien d'évitement — présence d'un lien vers le contenu principal<br>
+                <span class="raweb-crit">13.3</span> Rafraîchissement automatique — absence de <code>&lt;meta http-equiv=&quot;refresh&quot;&gt;</code><br>
+                <span class="raweb-crit">14.1</span> Déclaration d'accessibilité — présence d'un lien vers la déclaration d'accessibilité
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- Pied de page -->
+          <tr>
+            <td>
+                <div class="footer">
+                  Rapport généré automatiquement par LHCI Automation — OSAPS
+                </div>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

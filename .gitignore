@@ -1,0 +1,8 @@
+config/env
+config/projects/*.js
+launchd/*.plist
+runs/
+reports/
+.lock/
+.claude/
+.DS_Store
