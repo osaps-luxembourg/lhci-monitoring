@@ -4,7 +4,7 @@ set -euo pipefail
 # =============================================================
 # 03-report.sh — Génère le rapport CSV + les lignes HTML email
 # Usage : ./03-report.sh <nom_projet>
-# Format CSV : date,url,score_a11y,tendance_a11y,score_raweb,tendance_raweb,tendance_a11y_30j,tendance_raweb_30j,statut
+# Format CSV : date,url,score_a11y,tendance_a11y,tendance_a11y_30j,score_raweb,tendance_raweb,tendance_raweb_30j,statut
 # =============================================================
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -59,7 +59,7 @@ score_style() {
     local s=$1
     if   [[ $s -gt 95 ]]; then printf 'color:#1a7a4a; font-weight:bold;'
     elif [[ $s -ge 90 ]]; then printf 'color:#2eaa6a; font-weight:bold;'
-    elif [[ $s -ge 70 ]]; then printf 'color:#d97706; font-weight:bold;'
+    elif [[ $s -ge 70 ]]; then printf 'color:#b45309; font-weight:bold;'
     elif [[ $s -ge 50 ]]; then printf 'color:#c2500a; font-weight:bold;'
     else                        printf 'color:#cc1f1f; font-weight:bold;'
     fi
@@ -87,11 +87,31 @@ trend_csv() {
 
 trend_style() {
     local avg=$1 prev=$2
-    [[ -z "$prev" || "$prev" == "-1" || "$prev" == "n/a" ]] && { printf 'color:#888888;'; return; }
+    [[ -z "$prev" || "$prev" == "-1" || "$prev" == "n/a" ]] && { printf 'color:#666666;'; return; }
     local diff=$(( avg - prev ))
     if   [[ $diff -gt 0 ]]; then printf 'color:#2eaa6a; font-weight:bold;'
     elif [[ $diff -lt 0 ]]; then printf 'color:#cc1f1f; font-weight:bold;'
-    else                          printf 'color:#888888;'
+    else                          printf 'color:#666666;'
+    fi
+}
+
+score_label() {
+    local s=$1
+    if   [[ $s -gt 95 ]]; then printf 'Excellent'
+    elif [[ $s -ge 90 ]]; then printf 'Bon'
+    elif [[ $s -ge 70 ]]; then printf 'Moyen'
+    elif [[ $s -ge 50 ]]; then printf 'Insuffisant'
+    else                        printf 'Critique'
+    fi
+}
+
+trend_aria() {
+    local avg=$1 prev=$2
+    [[ -z "$prev" || "$prev" == "-1" || "$prev" == "n/a" ]] && { printf 'Non disponible'; return; }
+    local diff=$(( avg - prev ))
+    if   [[ $diff -gt 0 ]]; then printf 'En hausse de %d point(s)' "$diff"
+    elif [[ $diff -lt 0 ]]; then printf 'En baisse de %d point(s)' "$(( -diff ))"
+    else                          printf 'Stable'
     fi
 }
 
@@ -148,9 +168,14 @@ if [[ -n "$PREV_FILE" && -f "$PREV_FILE" ]]; then
         [[ "${fields[0]}" == "date" ]] && continue
         local_url="${fields[1]}"
         if [[ $COL_COUNT -ge 7 ]]; then
-            # Nouveau format : date,url,score_a11y,tendance_a11y,score_raweb,tendance_raweb,statut
-            prev_a11y["$local_url"]="${fields[2]}"
-            prev_raweb["$local_url"]="${fields[4]}"
+            # Détection format : nouveau (tendance_a11y_30j en col 4) ou ancien (score_raweb en col 4)
+            if [[ "$HEADER" == *"tendance_a11y_30j,score_raweb"* ]]; then
+                prev_a11y["$local_url"]="${fields[2]}"
+                prev_raweb["$local_url"]="${fields[5]}"
+            else
+                prev_a11y["$local_url"]="${fields[2]}"
+                prev_raweb["$local_url"]="${fields[4]}"
+            fi
         else
             # Ancien format : date,url,score,tendance,statut
             prev_a11y["$local_url"]="${fields[2]}"
@@ -185,8 +210,14 @@ if [[ -n "$PREV_30J_FILE" && -f "$PREV_30J_FILE" ]]; then
         [[ "${fields[2]}" == "ERREUR" ]] && continue
         local_url="${fields[1]}"
         if [[ $COL_COUNT_30J -ge 7 ]]; then
-            prev_a11y_30j["$local_url"]="${fields[2]}"
-            prev_raweb_30j["$local_url"]="${fields[4]}"
+            # Détection format : nouveau (tendance_a11y_30j en col 4) ou ancien (score_raweb en col 4)
+            if [[ "$HEADER_30J" == *"tendance_a11y_30j,score_raweb"* ]]; then
+                prev_a11y_30j["$local_url"]="${fields[2]}"
+                prev_raweb_30j["$local_url"]="${fields[5]}"
+            else
+                prev_a11y_30j["$local_url"]="${fields[2]}"
+                prev_raweb_30j["$local_url"]="${fields[4]}"
+            fi
         else
             prev_a11y_30j["$local_url"]="${fields[2]}"
         fi
@@ -199,7 +230,7 @@ fi
 # 3. Génération du CSV
 # =============================================================
 CSV_FILE="$MONTH_DIR/rapport_${TODAY}.csv"
-echo "date,url,score_a11y,tendance_a11y,score_raweb,tendance_raweb,tendance_a11y_30j,tendance_raweb_30j,statut" > "$CSV_FILE"
+echo "date,url,score_a11y,tendance_a11y,tendance_a11y_30j,score_raweb,tendance_raweb,tendance_raweb_30j,statut" > "$CSV_FILE"
 
 # =============================================================
 # 4. Génération des lignes HTML
@@ -251,8 +282,21 @@ for url in "${!scores_a11y_by_url[@]}"; do
         raweb_csv="-1"
     fi
 
-    # --- Style score a11y ---
+    # --- Style et labels accessibles ---
     a11y_style="$(score_style "$avg_a11y")"
+    a11y_label="$(score_label "$avg_a11y")"
+    t_aria_a11y="$(trend_aria "$avg_a11y" "${prev_a11y["$url"]:-}")"
+    t_aria_a11y_30j="$(trend_aria "$avg_a11y" "${prev_a11y_30j["$url"]:-}")"
+
+    if [[ $avg_raweb -ge 0 ]]; then
+        raweb_label="$(score_label "$avg_raweb")"
+        t_aria_raweb="$(trend_aria "$avg_raweb" "${prev_raweb["$url"]:-}")"
+        t_aria_raweb_30j="$(trend_aria "$avg_raweb" "${prev_raweb_30j["$url"]:-}")"
+    else
+        raweb_label="Non disponible"
+        t_aria_raweb="Non disponible"
+        t_aria_raweb_30j="Non disponible"
+    fi
 
     # --- Couleur de fond ligne (rouge si a11y critique) ---
     # bgcolor sur chaque <td> pour compatibilité Outlook (ignore background sur <tr>)
@@ -265,17 +309,17 @@ for url in "${!scores_a11y_by_url[@]}"; do
 
     # --- Ligne HTML ---
     HTML_ROWS="${HTML_ROWS}<tr>"
-    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL}${row_bg} word-break:break-word;\">${url}</td>"
-    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${a11y_style}\">${avg_a11y}</td>"
-    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_a11y}\">${t_label_a11y}</td>"
-    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_a11y_30j}\">${t_label_a11y_30j}</td>"
-    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${raweb_style}\">${raweb_display}</td>"
-    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_raweb}\">${t_label_raweb}</td>"
-    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_raweb_30j}\">${t_label_raweb_30j}</td>"
+    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL}${row_bg} word-break:break-word;\"><a href=\"${url}\" style=\"color:#1a3a5c;\">${url}</a></td>"
+    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${a11y_style}\" aria-label=\"Score accessibilité : ${avg_a11y} sur 100, niveau ${a11y_label}\">${avg_a11y}</td>"
+    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_a11y}\" aria-label=\"Tendance accessibilité depuis dernier rapport : ${t_aria_a11y}\">${t_label_a11y}</td>"
+    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_a11y_30j}\" aria-label=\"Tendance accessibilité sur 30 jours : ${t_aria_a11y_30j}\">${t_label_a11y_30j}</td>"
+    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${raweb_style}\" aria-label=\"Score RAWeb : ${raweb_display}, niveau ${raweb_label}\">${raweb_display}</td>"
+    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_raweb}\" aria-label=\"Tendance RAWeb depuis dernier rapport : ${t_aria_raweb}\">${t_label_raweb}</td>"
+    HTML_ROWS="${HTML_ROWS}<td${row_bg_attr} style=\"${CELL_C}${row_bg} ${t_style_raweb_30j}\" aria-label=\"Tendance RAWeb sur 30 jours : ${t_aria_raweb_30j}\">${t_label_raweb_30j}</td>"
     HTML_ROWS="${HTML_ROWS}</tr>"
 
     # --- Ligne CSV ---
-    echo "${TODAY},${url},${avg_a11y},${t_csv_a11y},${raweb_csv},${t_csv_raweb},${t_csv_a11y_30j},${t_csv_raweb_30j},OK" >> "$CSV_FILE"
+    echo "${TODAY},${url},${avg_a11y},${t_csv_a11y},${t_csv_a11y_30j},${raweb_csv},${t_csv_raweb},${t_csv_raweb_30j},OK" >> "$CSV_FILE"
 done
 
 # =============================================================
@@ -295,7 +339,7 @@ if [[ -f "$FAILED_URLS_FILE" ]]; then
         HTML_ROWS="${HTML_ROWS}<td${FAIL_BG_ATTR} colspan=\"6\" style=\"${CELL_C}${FAIL_BG} ${FAIL_STYLE}\">&#9888;&nbsp;Échec de collecte</td>"
         HTML_ROWS="${HTML_ROWS}</tr>"
 
-        echo "${TODAY},${failed_url},ERREUR,n/a,-1,n/a,n/a,n/a,ERREUR" >> "$CSV_FILE"
+        echo "${TODAY},${failed_url},ERREUR,n/a,n/a,-1,n/a,n/a,ERREUR" >> "$CSV_FILE"
 
         log "INFO" "Ligne erreur ajoutée : $failed_url"
     done < "$FAILED_URLS_FILE"

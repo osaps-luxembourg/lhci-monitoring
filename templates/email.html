@@ -14,7 +14,7 @@
     /* ── Scores ── */
     .score-very-good { color: #1a7a4a; }
     .score-good       { color: #2eaa6a; }
-    .score-medium     { color: #d97706; }
+    .score-medium     { color: #b45309; }
     .score-medium-bad { color: #c2500a; }
     .score-bad        { color: #cc1f1f; }
 
@@ -80,21 +80,21 @@
       background: #f2f4f8;
       text-align: center;
       padding: 16px 30px;
-      font-size: 11px;
-      color: #999;
+      font-size: 12px;
+      color: #666;
     }
   </style>
 </head>
 <body style="margin:0; padding:0; background-color:#f2f4f8; font-family:Arial,Helvetica,sans-serif; color:#222;">
 
   <!-- Fond général -->
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f4f8"
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f4f8"
          style="background-color:#f2f4f8;">
     <tr>
       <td align="center" style="padding:20px 10px;">
 
         <!-- Bloc principal -->
-        <table width="1024" cellpadding="0" cellspacing="0" border="0"
+        <table role="presentation" width="1024" cellpadding="0" cellspacing="0" border="0"
                style="width:820px; background-color:#ffffff; font-family:Arial,Helvetica,sans-serif;">
 
           <!-- En-tête -->
@@ -122,47 +122,58 @@
               <table width="100%" cellpadding="0" cellspacing="0" border="0"
                      style="font-size:13px; border-collapse:collapse;
                             font-family:Arial,Helvetica,sans-serif;">
+                <caption style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+                                overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+                  Scores d'accessibilité et tendances par URL
+                </caption>
                 <thead>
                   <tr bgcolor="#1a3a5c" style="background-color:#1a3a5c;">
-                    <th align="left"
+                    <th scope="col" align="left"
                         style="padding:11px 14px; color:#ffffff; font-weight:600;
-                               font-family:Arial,Helvetica,sans-serif; text-align:left;">
+                               font-family:Arial,Helvetica,sans-serif; text-align:left;"
+                        aria-label="URL de la page">
                       URL
                     </th>
-                    <th align="center" width="70"
+                    <th scope="col" align="center" width="70"
                         style="padding:11px 10px; color:#ffffff; font-weight:600; width:70px;
                                font-family:Arial,Helvetica,sans-serif; text-align:center;
-                               white-space:nowrap;">
+                               white-space:nowrap;"
+                        aria-label="Score d'accessibilité Lighthouse (0 à 100)">
                       Score A11y
                     </th>
-                    <th align="center" width="55"
+                    <th scope="col" align="center" width="55"
                         style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
                                font-family:Arial,Helvetica,sans-serif; text-align:center;
-                               white-space:nowrap;">
+                               white-space:nowrap;"
+                        aria-label="Tendance accessibilité depuis le dernier rapport">
                       Dernier
                     </th>
-                    <th align="center" width="55"
+                    <th scope="col" align="center" width="55"
                         style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
                                font-family:Arial,Helvetica,sans-serif; text-align:center;
-                               white-space:nowrap;">
+                               white-space:nowrap;"
+                        aria-label="Tendance accessibilité sur 30 jours">
                       30j
                     </th>
-                    <th align="center" width="70"
+                    <th scope="col" align="center" width="70"
                         style="padding:11px 10px; color:#ffffff; font-weight:600; width:70px;
                                font-family:Arial,Helvetica,sans-serif; text-align:center;
-                               white-space:nowrap;">
+                               white-space:nowrap;"
+                        aria-label="Score RAWeb Luxembourg (0 à 100)">
                       Score RAWeb
                     </th>
-                    <th align="center" width="55"
+                    <th scope="col" align="center" width="55"
                         style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
                                font-family:Arial,Helvetica,sans-serif; text-align:center;
-                               white-space:nowrap;">
+                               white-space:nowrap;"
+                        aria-label="Tendance RAWeb depuis le dernier rapport">
                       Dernier
                     </th>
-                    <th align="center" width="55"
+                    <th scope="col" align="center" width="55"
                         style="padding:11px 8px; color:#ffffff; font-weight:600; width:55px;
                                font-family:Arial,Helvetica,sans-serif; text-align:center;
-                               white-space:nowrap;">
+                               white-space:nowrap;"
+                        aria-label="Tendance RAWeb sur 30 jours">
                       30j
                     </th>
                   </tr>
@@ -174,21 +185,25 @@
 
               <!-- Légende scores -->
               <div class="legend">
-                <span class="score-very-good">&gt; 95</span> Excellent &nbsp;|&nbsp;
-                <span class="score-good">90–95</span> Bon &nbsp;|&nbsp;
-                <span class="score-medium">70–89</span> Moyen &nbsp;|&nbsp;
-                <span class="score-medium-bad">50–69</span> Insuffisant &nbsp;|&nbsp;
-                <span class="score-bad">&lt; 50</span> Critique
+                <ul style="list-style:none; margin:0; padding:0;">
+                  <li style="display:inline; margin-right:14px;"><span style="color:#1a7a4a; font-weight:bold;">&gt; 95</span> Excellent</li>
+                  <li style="display:inline; margin-right:14px;"><span style="color:#2eaa6a; font-weight:bold;">90–95</span> Bon</li>
+                  <li style="display:inline; margin-right:14px;"><span style="color:#b45309; font-weight:bold;">70–89</span> Moyen</li>
+                  <li style="display:inline; margin-right:14px;"><span style="color:#c2500a; font-weight:bold;">50–69</span> Insuffisant</li>
+                  <li style="display:inline; margin-right:14px;"><span style="color:#cc1f1f; font-weight:bold;">&lt; 50</span> Critique</li>
+                </ul>
               </div>
 
               <!-- Légende RAWeb -->
               <div class="legend legend-raweb">
-                <strong>Critères RAWeb testés automatiquement</strong><br>
-                <span class="raweb-crit">12.1</span> Navigation multiple — détection de menus, recherche, plan du site, fil d'Ariane <em>(informatif)</em><br>
-                <span class="raweb-crit">12.5</span> Moyen de contact — présence d'un lien de contact (mailto, formulaire…)<br>
-                <span class="raweb-crit">12.6</span> Lien d'évitement — présence d'un lien vers le contenu principal<br>
-                <span class="raweb-crit">13.3</span> Rafraîchissement automatique — absence de <code>&lt;meta http-equiv=&quot;refresh&quot;&gt;</code><br>
-                <span class="raweb-crit">14.1</span> Déclaration d'accessibilité — présence d'un lien vers la déclaration d'accessibilité
+                <strong>Critères RAWeb testés automatiquement</strong>
+                <ul style="list-style:none; margin:0; padding:0;">
+                  <li><span class="raweb-crit">12.1</span> Navigation multiple — détection de menus, recherche, plan du site, fil d'Ariane <em>(informatif)</em></li>
+                  <li><span class="raweb-crit">12.5</span> Moyen de contact — présence d'un lien de contact (mailto, formulaire…)</li>
+                  <li><span class="raweb-crit">12.6</span> Lien d'évitement — présence d'un lien vers le contenu principal</li>
+                  <li><span class="raweb-crit">13.3</span> Rafraîchissement automatique — absence de <code>&lt;meta http-equiv=&quot;refresh&quot;&gt;</code></li>
+                  <li><span class="raweb-crit">14.1</span> Déclaration d'accessibilité — présence d'un lien vers la déclaration d'accessibilité</li>
+                </ul>
               </div>
 
             </td>
@@ -198,7 +213,7 @@
           <tr>
             <td>
                 <div class="footer">
-                  Rapport généré automatiquement par LHCI Automation — OSAPS
+                  Rapport généré automatiquement par LHCI Automation - OSAPS
                 </div>
             </td>
           </tr>
