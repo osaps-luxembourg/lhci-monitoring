@@ -100,7 +100,7 @@ cp config/env.example config/env
 # Éditer config/env avec les vraies valeurs (adresse email destinataire)
 
 # Créer les configs projets
-# cp config/projects/mon-projet.js.example config/projects/mon-projet.js
+cp config/projects/mon-projet.js.example config/projects/mon-projet.js
 # Éditer avec les URLs et le token LHCI du projet
 
 # Lancer l'installation (launchd + pmset + symlink plugin)
@@ -124,7 +124,7 @@ MAIL_TO="destinataire@example.com"
 
 ## Configuration d'un projet
 
-Chaque projet est défini par un fichier `.js` dans `config/projects/` (non commité) :
+Chaque projet est défini par un fichier `.js` dans `config/projects/` :
 
 ```js
 // config/projects/mon-projet.js

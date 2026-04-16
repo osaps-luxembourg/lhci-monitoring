@@ -239,7 +239,8 @@ HTML_ROWS=""
 CELL="padding:10px 14px; border-bottom:1px solid #e8ecf0;"
 CELL_C="padding:10px 14px; border-bottom:1px solid #e8ecf0; text-align:center; white-space:nowrap;"
 
-for url in "${!scores_a11y_by_url[@]}"; do
+mapfile -t SORTED_URLS < <(printf '%s\n' "${!scores_a11y_by_url[@]}" | sort)
+for url in "${SORTED_URLS[@]}"; do
     count="${count_by_url["$url"]}"
     avg_a11y=$(( scores_a11y_by_url["$url"] / count ))
 
@@ -342,7 +343,7 @@ if [[ -f "$FAILED_URLS_FILE" ]]; then
         echo "${TODAY},${failed_url},ERREUR,n/a,n/a,-1,n/a,n/a,ERREUR" >> "$CSV_FILE"
 
         log "INFO" "Ligne erreur ajoutée : $failed_url"
-    done < "$FAILED_URLS_FILE"
+    done < <(sort "$FAILED_URLS_FILE")
 fi
 
 # --- Sauvegarde des lignes HTML pour 04-notify.sh ---
