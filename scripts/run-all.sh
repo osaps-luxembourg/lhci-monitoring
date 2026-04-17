@@ -16,19 +16,18 @@ LOCK_DIR="$BASE_DIR/.lock"
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 # =============================================================
-# Projets actifs — commenter une ligne pour désactiver
+# Chargement de la configuration
 # =============================================================
-PROJECTS=(
-    # "surveillance"
-    "audiovisuel"
-    "bancaire"
-    "communication"
-    "livres"
-    "transport"
-    "commerce"
-    "aerien"
-    # "test"
-)
+ENV_FILE="$BASE_DIR/config/env"
+if [[ ! -f "$ENV_FILE" ]]; then
+    echo "ERROR: Fichier config/env introuvable — copier config/env.example et renseigner les variables"
+    exit 1
+fi
+source "$ENV_FILE"
+: "${LHCI_PROJECTS:?Erreur : LHCI_PROJECTS non défini dans config/env}"
+
+# Conversion de la chaîne en tableau
+read -ra PROJECTS <<< "$LHCI_PROJECTS"
 
 # =============================================================
 # Utilitaires
