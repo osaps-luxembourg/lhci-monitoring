@@ -16,6 +16,9 @@ import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default {
+  gatherers: [
+    { path: join(__dirname, 'gatherers/footer-anchors.mjs') },
+  ],
   audits: [
     { path: join(__dirname, 'audits/raweb-accessibility-statement.mjs') },
     { path: join(__dirname, 'audits/raweb-skip-links.mjs') },
